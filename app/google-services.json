@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "384346068224",
+    "project_id": "storage-80ac0",
+    "storage_bucket": "storage-80ac0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:384346068224:android:9a35fa5cc1cb68ff3b0fe5",
+        "android_client_info": {
+          "package_name": "com.emre.storage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBN7HOwHqYiCd4UE0jBVr-VmSdQg2carRw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
