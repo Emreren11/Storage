@@ -8,12 +8,17 @@ import android.widget.Toast
 import com.emre.storage.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
+    private var email = ""
+    private var pass = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +27,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(view)
 
         auth = Firebase.auth
+        firestore = Firebase.firestore
+
 
         val currentUser = auth.currentUser
         currentUser?.let {
@@ -30,15 +37,28 @@ class LoginActivity : AppCompatActivity() {
             finish()
         }
 
+        val intentFromMain = intent
+        val emailFromSingOut = intentFromMain.getStringExtra("signOut")
+
+        emailFromSingOut?.let {
+            binding.emailText.setText(it)
+        }
+
     }
 
     fun signUp(view: View) {
 
-        val email = binding.emailText.text.toString()
-        val pass = binding.passText.text.toString()
+        email = binding.emailText.text.toString()
+        pass = binding.passText.text.toString()
 
         if (email.isNotEmpty() && pass.isNotEmpty()) {
             auth.createUserWithEmailAndPassword(email, pass).addOnSuccessListener {
+
+                val user = hashMapOf(
+                    "email" to email
+                )
+                firestore.collection(email).document("storage").set(user)
+                firestore.collection(email).document("products").set(user)
 
                 val intentToMain = Intent(this@LoginActivity, MainActivity::class.java)
                 startActivity(intentToMain)
@@ -52,8 +72,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun signIn(view: View) {
-        val email = binding.emailText.text.toString()
-        val pass = binding.passText.text.toString()
+        email = binding.emailText.text.toString()
+        pass = binding.passText.text.toString()
 
         if (email.isNotEmpty() && pass.isNotEmpty()) {
             auth.signInWithEmailAndPassword(email, pass).addOnSuccessListener {

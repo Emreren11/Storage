@@ -85,10 +85,10 @@
 
     <Button
         android:id="@+id/productAddBtn"
-        android:layout_width="127dp"
+        android:layout_width="wrap_content"
         android:layout_height="56dp"
         android:layout_marginTop="16dp"
-        android:text="Add"
+        android:text="Add / Update"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/priceText"
         app:layout_constraintTop_toBottomOf="@+id/priceText" />

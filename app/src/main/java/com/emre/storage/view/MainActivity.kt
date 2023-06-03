@@ -17,11 +17,14 @@ import com.emre.storage.fragment.StorageFragmentDirections
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
     private lateinit var binding: ActivityMainBinding
     private lateinit var bottomNav: BottomNavigationView
     private lateinit var navHostFragment: NavHostFragment
@@ -35,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         auth = Firebase.auth
+        firestore = Firebase.firestore
         bottomNav = binding.bottomNavigationView
         navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
@@ -48,7 +52,6 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener {menuItem ->
             val currentFragment = navHostFragment.childFragmentManager.primaryNavigationFragment
             val fragmentName = currentFragment?.javaClass?.simpleName
-            println(fragmentName)
             when(menuItem.itemId) {
                 R.id.home -> {
                     if (fragmentName == "StorageFragment") {
@@ -84,8 +87,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.signOut) {
+            val email = auth.currentUser!!.email
             auth.signOut()
+
             val intentToLogin = Intent(this@MainActivity, LoginActivity::class.java)
+            intentToLogin.putExtra("signOut", email)
             startActivity(intentToLogin)
             finish()
         }
