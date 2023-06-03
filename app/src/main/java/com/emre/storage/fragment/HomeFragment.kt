@@ -5,11 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import com.emre.storage.databinding.FragmentHomeBinding
 import com.emre.storage.model.Products
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
@@ -27,6 +30,7 @@ class HomeFragment : Fragment() {
     private lateinit var productRef: DocumentReference
     private lateinit var storageRef: DocumentReference
     private lateinit var spinnerArray : ArrayList<String>
+    private lateinit var spinnerPrdName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +51,8 @@ class HomeFragment : Fragment() {
 
 
         binding.productAddBtn.setOnClickListener { newProduct() }
+        binding.stockAddBtn.setOnClickListener { newStock() }
+        binding.stockDeleteBtn.setOnClickListener { deleteStock() }
 
 
         auth = Firebase.auth
@@ -54,6 +60,7 @@ class HomeFragment : Fragment() {
         productArray = ArrayList()
         userEmail = auth.currentUser!!.email.toString()
         spinnerArray = ArrayList()
+
 
         // Main doc reference
         productRef = firestore.collection(userEmail).document("products")
@@ -63,8 +70,25 @@ class HomeFragment : Fragment() {
         getDataToSpinner()
 
 
+        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                spinnerPrdName = parent?.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                spinnerPrdName = spinnerArray[0]
+            }
+        }
+
+
 
     }
+    // Adding new product
     private fun newProduct() {
         val productName = binding.productNameText.text.toString().split(" ").joinToString(" ") { it.replaceFirstChar { it.uppercaseChar() } }
         val price = binding.priceText.text.toString()
@@ -90,9 +114,87 @@ class HomeFragment : Fragment() {
             Toast.makeText(requireContext(), "Enter product name and price", Toast.LENGTH_LONG).show()
         }
 
+    }
+
+
+
+    // Adding product to storage
+    private fun newStock() {
+        val color = binding.colorText.text.toString().split(" ").joinToString(" ") { it.replaceFirstChar { it.uppercaseChar() } }
+        val stock = binding.stockText.text.toString()
+
+        if (color.isNotEmpty() && stock.isNotEmpty()) {
+            val docName = "$color $spinnerPrdName"
+            var lastStockInfo: Int
+            val stockInfo = getStockInfo(docName)
+            stockInfo.addOnSuccessListener {
+                lastStockInfo = it + stock.toInt()
+
+                val dataForStorage = hashMapOf(
+                    "pName" to spinnerPrdName,
+                    "color" to color,
+                    "stock" to lastStockInfo.toString()
+                )
+
+                storageRef.collection("storage").document(docName).set(dataForStorage).addOnSuccessListener {
+                    binding.colorText.setText("")
+                    binding.stockText.setText("")
+                    Toast.makeText(requireContext(), "Stock has been successfully added to storage", Toast.LENGTH_SHORT).show()
+
+                }
+            }
+
+        } else {
+            Toast.makeText(requireContext(), "Enter color and stock", Toast.LENGTH_SHORT).show()
+        }
+
 
     }
 
+    // Delete stock
+    private fun deleteStock() {
+        val color = binding.colorText.text.toString().split(" ").joinToString(" ") { it.replaceFirstChar { it.uppercaseChar() } }
+        val stock = binding.stockText.text.toString()
+
+        if (color.isNotEmpty() && stock.isNotEmpty()) {
+
+            val docName = "$color $spinnerPrdName"
+
+            val stockControl = getStockInfo(docName)
+
+            stockControl.addOnSuccessListener { result ->
+
+                println(result)
+                var resultStock = result
+
+                if (resultStock == 0) {
+                    Toast.makeText(requireContext(), "Your stock quantity already 0", Toast.LENGTH_LONG).show()
+                } else {
+                    resultStock -= stock.toInt()
+                    if (resultStock < 0) {
+                        Toast.makeText(requireContext(), "Your stock quantity is not sufficient", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val dataForStorage = hashMapOf(
+                            "pName" to spinnerPrdName,
+                            "color" to color,
+                            "stock" to resultStock.toString()
+                        )
+                        storageRef.collection("storage").document(docName).set(dataForStorage).addOnSuccessListener {
+                            binding.colorText.setText("")
+                            binding.stockText.setText("")
+                            Toast.makeText(requireContext(), "Stock quantity reduced by $result", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+
+            }
+
+        } else {
+            Toast.makeText(requireContext(), "Enter color and stock", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Spinner'a veriyi çekme
     private fun getDataToSpinner() {
         productRef.collection("product").get().addOnSuccessListener {doc ->
             val documents = doc.documents
@@ -124,6 +226,27 @@ class HomeFragment : Fragment() {
                 binding.stockDeleteBtn.isEnabled = true
             }
         }
+
+    }
+
+    // If the document already exists, it retrieves the stock information.
+    private fun getStockInfo(docName: String): Task<Int>{
+
+        val completionSource = TaskCompletionSource<Int>()
+
+        storageRef.collection("storage").get().addOnSuccessListener {
+            val documents = it.documents
+            for (document in documents) {
+                if (document.id == docName) {
+                    val docStock = document.get("stock").toString()
+                    val stockFromDoc = docStock.toInt()
+                    completionSource.setResult(stockFromDoc)
+                    return@addOnSuccessListener
+                }
+            }
+            completionSource.setResult(0)
+        }
+        return completionSource.task
 
     }
 }
