@@ -3,8 +3,10 @@ package com.emre.storage.view
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import android.widget.Toast
+import com.emre.storage.R
 import com.emre.storage.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -19,6 +21,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var firestore: FirebaseFirestore
     private var email = ""
     private var pass = ""
+    private var isVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,6 +91,19 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this@LoginActivity, "Enter email and password!", Toast.LENGTH_LONG).show()
         }
 
+    }
+
+    fun showPass(view: View) {
+
+        if (!isVisible) {
+            binding.passText.inputType = InputType.TYPE_CLASS_TEXT
+            binding.imageView.setImageResource(R.drawable.hide1)
+            isVisible = true
+        } else {
+            binding.passText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            binding.imageView.setImageResource(R.drawable.show)
+            isVisible = false
+        }
     }
 
 }
