@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import com.emre.storage.databinding.FragmentHomeBinding
-import com.emre.storage.model.Products
+import com.emre.storage.view.MainActivity
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.auth.FirebaseAuth
@@ -25,12 +25,13 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
-    private lateinit var productArray: ArrayList<Products>
     private lateinit var userEmail: String
     private lateinit var productRef: DocumentReference
     private lateinit var storageRef: DocumentReference
     private lateinit var spinnerArray : ArrayList<String>
     private lateinit var spinnerPrdName: String
+    private lateinit var spinnerCurrencyArray: ArrayList<String>
+    lateinit var currency: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,19 +58,21 @@ class HomeFragment : Fragment() {
 
         auth = Firebase.auth
         firestore = Firebase.firestore
-        productArray = ArrayList()
         userEmail = auth.currentUser!!.email.toString()
         spinnerArray = ArrayList()
+        spinnerCurrencyArray = arrayListOf("$", "€", "TL")
 
 
-        // Main doc reference
+        // Main product doc reference
         productRef = firestore.collection(userEmail).document("products")
-        // Main collection reference
+        // Main storage doc reference
         storageRef = firestore.collection(userEmail).document("storage")
 
+        // Get products to spinner
         getDataToSpinner()
 
 
+        // Action for product spinner choice
         binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -85,6 +88,23 @@ class HomeFragment : Fragment() {
             }
         }
 
+        // Action for currency spinnew choice
+        binding.spinnerCurreny.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                currency = parent?.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                currency = "$"
+            }
+
+        }
+
 
 
     }
@@ -96,7 +116,8 @@ class HomeFragment : Fragment() {
         if (productName.isNotEmpty() && price.isNotEmpty()) {
             val product = hashMapOf(
                 "pName" to productName,
-                "price" to price
+                "price" to price,
+                "currency" to currency
             )
 
             // SubColletion and Doc
@@ -194,24 +215,21 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // Spinner'a veriyi çekme
+    // Get data to spinner
     private fun getDataToSpinner() {
         productRef.collection("product").get().addOnSuccessListener {doc ->
             val documents = doc.documents
 
             spinnerArray.clear()
-            productArray.clear()
 
             for (document in documents) {
                 val docPName = document.get("pName").toString()
                 val docPrice = document.get("price").toString()
-                val product = Products(docPName, docPrice)
-
-                productArray.add(product)
 
                 spinnerArray.add(docPName)
             }
 
+            // Product Spinner
             val spinner: Spinner = binding.spinner
 
             val spinAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, spinnerArray)
@@ -226,6 +244,12 @@ class HomeFragment : Fragment() {
                 binding.stockDeleteBtn.isEnabled = true
             }
         }
+
+        // Currency Spinner
+        val spinCurreny: Spinner = binding.spinnerCurreny
+        val spinCryAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item,spinnerCurrencyArray)
+        spinCryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinCurreny.adapter = spinCryAdapter
 
     }
 

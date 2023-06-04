@@ -75,11 +75,12 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="5dp"
         android:ems="10"
         android:hint="Price*"
-        android:inputType="number"
+        android:inputType="number|numberDecimal"
         android:paddingStart="6dp"
-        app:layout_constraintEnd_toEndOf="@+id/productNameText"
+        app:layout_constraintEnd_toStartOf="@+id/spinnerCurreny"
         app:layout_constraintStart_toStartOf="@+id/productNameText"
         app:layout_constraintTop_toBottomOf="@+id/productNameText" />
 
@@ -90,7 +91,7 @@
         android:layout_marginTop="16dp"
         android:text="Add / Update"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/priceText"
+        app:layout_constraintEnd_toEndOf="@+id/spinnerCurreny"
         app:layout_constraintTop_toBottomOf="@+id/priceText" />
 
     <Button
@@ -115,10 +116,19 @@
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="0dp"
-        android:layout_height="43dp"
+        android:layout_height="48dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="@+id/productNameText"
         app:layout_constraintStart_toStartOf="@+id/productNameText"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <Spinner
+        android:id="@+id/spinnerCurreny"
+        android:layout_width="90dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/productNameText"
+        app:layout_constraintStart_toEndOf="@+id/priceText"
+        app:layout_constraintTop_toTopOf="@+id/priceText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

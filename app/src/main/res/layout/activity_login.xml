@@ -63,14 +63,4 @@
         app:layout_constraintStart_toEndOf="@+id/button2"
         app:layout_constraintTop_toTopOf="@+id/button2" />
 
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Remember Me"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/passText"
-        app:layout_constraintTop_toBottomOf="@+id/passText" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
