@@ -21,7 +21,7 @@
         app:layout_constraintTop_toBottomOf="@+id/colorText" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/productText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -33,13 +33,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/stockTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Stock"
         android:textColor="@color/black"
         android:textSize="35sp"
-        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="@+id/productText"
         app:layout_constraintTop_toBottomOf="@+id/productAddBtn" />
 
     <EditText
@@ -55,7 +55,7 @@
         android:paddingStart="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/productText" />
 
     <EditText
         android:id="@+id/colorText"
@@ -120,7 +120,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="@+id/productNameText"
         app:layout_constraintStart_toStartOf="@+id/productNameText"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/stockTextView" />
 
     <Spinner
         android:id="@+id/spinnerCurreny"

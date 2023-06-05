@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNav: BottomNavigationView
     private lateinit var navHostFragment: NavHostFragment
     private lateinit var navController: NavController
+    lateinit var language: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,13 +38,21 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        // Initialize
         auth = Firebase.auth
         firestore = Firebase.firestore
         bottomNav = binding.bottomNavigationView
         navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
+        language = intent.getStringExtra("language")!!
 
+        // UI changes for language
+        if (language == "Türkçe") {
+            binding.bottomNavigationView.menu.findItem(R.id.home).title = "Anasayfa"
+            binding.bottomNavigationView.menu.findItem(R.id.storage).title = "Depo"
+        }
 
+        // Getting fragment to HostFragment
         getFragment()
 
 
@@ -85,6 +94,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
+        if (language == "Türkçe") {
+            menu!!.findItem(R.id.signOut).title = "Çıkış Yap"
+        }
         return super.onCreateOptionsMenu(menu)
     }
 

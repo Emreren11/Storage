@@ -31,7 +31,9 @@ class HomeFragment : Fragment() {
     private lateinit var spinnerArray : ArrayList<String>
     private lateinit var spinnerPrdName: String
     private lateinit var spinnerCurrencyArray: ArrayList<String>
-    lateinit var currency: String
+    private lateinit var currency: String
+    lateinit var language: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,17 +53,31 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+        // Button click actions
         binding.productAddBtn.setOnClickListener { newProduct() }
         binding.stockAddBtn.setOnClickListener { newStock() }
         binding.stockDeleteBtn.setOnClickListener { deleteStock() }
 
-
+        // Initialize
         auth = Firebase.auth
         firestore = Firebase.firestore
         userEmail = auth.currentUser!!.email.toString()
         spinnerArray = ArrayList()
         spinnerCurrencyArray = arrayListOf("$", "€", "TL")
+        language = (activity as MainActivity).language
 
+        // UI changes for language
+        if (language == "Türkçe") {
+            binding.productText.text = "Ürün"
+            binding.productNameText.hint = "Ürün İsmi"
+            binding.priceText.hint = "Birim Fiyat"
+            binding.productAddBtn.text = "Ekle / Güncelle"
+            binding.stockTextView.text = "Stok"
+            binding.colorText.hint = "Renk"
+            binding.stockText.hint = "Stok Adedi"
+            binding.stockDeleteBtn.text = "Sil"
+            binding.stockAddBtn.text = "Ekle"
+        }
 
         // Main product doc reference
         productRef = firestore.collection(userEmail).document("products")
@@ -105,9 +121,8 @@ class HomeFragment : Fragment() {
 
         }
 
-
-
     }
+
     // Adding new product
     private fun newProduct() {
         val productName = binding.productNameText.text.toString().split(" ").joinToString(" ") { it.replaceFirstChar { it.uppercaseChar() } }
@@ -125,14 +140,22 @@ class HomeFragment : Fragment() {
                 binding.productNameText.setText("")
                 binding.priceText.setText("")
 
-                Toast.makeText(requireContext(), "The product has been successfully added / updated.", Toast.LENGTH_SHORT).show()
+                if (language == "Türkçe") {
+                    Toast.makeText(requireContext(), "Ürün başarıyla eklendi / güncellendi!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "The product has been successfully added / updated!", Toast.LENGTH_SHORT).show()
+                }
 
                 // Update spinner
                 getDataToSpinner()
             }
 
         } else {
-            Toast.makeText(requireContext(), "Enter product name and price", Toast.LENGTH_LONG).show()
+            if (language == "Türkçe") {
+                Toast.makeText(requireContext(), "Ürün adını ve fiyatını girin!", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(requireContext(), "Enter product name and price!", Toast.LENGTH_LONG).show()
+            }
         }
 
     }
@@ -160,13 +183,21 @@ class HomeFragment : Fragment() {
                 storageRef.collection("storage").document(docName).set(dataForStorage).addOnSuccessListener {
                     binding.colorText.setText("")
                     binding.stockText.setText("")
-                    Toast.makeText(requireContext(), "Stock has been successfully added to storage", Toast.LENGTH_SHORT).show()
+                    if (language == "Türkçe") {
+                        Toast.makeText(requireContext(), "Stok başarıyla depoya eklendi!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Stock has been successfully added to storage!", Toast.LENGTH_SHORT).show()
+                    }
 
                 }
             }
 
         } else {
-            Toast.makeText(requireContext(), "Enter color and stock", Toast.LENGTH_SHORT).show()
+            if (language == "Türkçe") {
+                Toast.makeText(requireContext(), "Renk ve stok adet bilgisini girin!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Enter color and stock!", Toast.LENGTH_SHORT).show()
+            }
         }
 
 
@@ -189,11 +220,19 @@ class HomeFragment : Fragment() {
                 var resultStock = result
 
                 if (resultStock == 0) {
-                    Toast.makeText(requireContext(), "Your stock quantity already 0", Toast.LENGTH_LONG).show()
+                    if (language == "Türkçe") {
+                        Toast.makeText(requireContext(), "Stok adediniz sıfır olduğu için işlem gerçekleştirilemedi!", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Your stock quantity already 0!", Toast.LENGTH_LONG).show()
+                    }
                 } else {
                     resultStock -= stock.toInt()
                     if (resultStock < 0) {
-                        Toast.makeText(requireContext(), "Your stock quantity is not sufficient", Toast.LENGTH_SHORT).show()
+                        if (language == "Türkçe") {
+                            Toast.makeText(requireContext(), "Stok adediniz yeterli değil!", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(requireContext(), "Your stock quantity is not sufficient!", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
                         val dataForStorage = hashMapOf(
                             "pName" to spinnerPrdName,
@@ -203,7 +242,11 @@ class HomeFragment : Fragment() {
                         storageRef.collection("storage").document(docName).set(dataForStorage).addOnSuccessListener {
                             binding.colorText.setText("")
                             binding.stockText.setText("")
-                            Toast.makeText(requireContext(), "Stock quantity reduced by $result", Toast.LENGTH_SHORT).show()
+                            if (language == "Türkçe") {
+                                Toast.makeText(requireContext(), "Stok adediniz $result düşürüldü!", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(requireContext(), "Stock quantity reduced by $result !", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }
@@ -211,7 +254,11 @@ class HomeFragment : Fragment() {
             }
 
         } else {
-            Toast.makeText(requireContext(), "Enter color and stock", Toast.LENGTH_SHORT).show()
+            if (language == "Türkçe") {
+                Toast.makeText(requireContext(), "Renk ve stok adet bilgisini girin!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Enter color and stock!", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

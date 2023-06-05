@@ -1,6 +1,7 @@
 package com.emre.storage.view
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
@@ -22,6 +23,7 @@ class LoginActivity : AppCompatActivity() {
     private var email = ""
     private var pass = ""
     private var isVisible = false
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +33,15 @@ class LoginActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         firestore = Firebase.firestore
+        sharedPreferences = getSharedPreferences("com.emre.storage.view", MODE_PRIVATE)
+
 
 
         val currentUser = auth.currentUser
         currentUser?.let {
+            val language = sharedPreferences.getString("language", "")
             val intentToMain = Intent(this@LoginActivity, MainActivity::class.java)
+            intentToMain.putExtra("language", language)
             startActivity(intentToMain)
             finish()
         }
@@ -53,19 +59,30 @@ class LoginActivity : AppCompatActivity() {
 
         email = binding.emailText.text.toString()
         pass = binding.passText.text.toString()
+        val radioTr = binding.radioTurkish.isChecked
+        val language: String
+        if (radioTr){
+            language = "Türkçe"
+        } else {
+            language = "English"
+        }
 
         if (email.isNotEmpty() && pass.isNotEmpty()) {
             auth.createUserWithEmailAndPassword(email, pass).addOnSuccessListener {
 
                 val user = hashMapOf(
-                    "email" to email
+                    "language" to language
                 )
                 firestore.collection(email).document("storage").set(user)
                 firestore.collection(email).document("products").set(user)
 
+                sharedPreferences.edit().putString("language", language).apply()
+
                 val intentToMain = Intent(this@LoginActivity, MainActivity::class.java)
+                intentToMain.putExtra("language", language)
                 startActivity(intentToMain)
                 finish()
+
             }.addOnFailureListener {
                 Toast.makeText(this@LoginActivity, it.localizedMessage, Toast.LENGTH_LONG).show()
             }
@@ -77,13 +94,35 @@ class LoginActivity : AppCompatActivity() {
     fun signIn(view: View) {
         email = binding.emailText.text.toString()
         pass = binding.passText.text.toString()
+        val radioTr = binding.radioTurkish.isChecked
+        val language: String
+        if (radioTr){
+            language = "Türkçe"
+        } else {
+            language = "English"
+        }
 
         if (email.isNotEmpty() && pass.isNotEmpty()) {
             auth.signInWithEmailAndPassword(email, pass).addOnSuccessListener {
 
-                val intentToMain = Intent(this@LoginActivity, MainActivity::class.java)
-                startActivity(intentToMain)
-                finish()
+                val user = hashMapOf(
+                    "language" to language
+                )
+                firestore.collection(email).document("storage").set(user)
+                firestore.collection(email).document("products").set(user)
+
+                firestore.collection(email).document("storage").get().addOnSuccessListener {
+
+                    val langFromFirebase = it.get("language").toString()
+                    sharedPreferences.edit().putString("language", langFromFirebase).apply()
+
+                    val intentToMain = Intent(this@LoginActivity, MainActivity::class.java)
+                    intentToMain.putExtra("language", langFromFirebase)
+                    startActivity(intentToMain)
+                    finish()
+                }
+
+
             }.addOnFailureListener {
                 Toast.makeText(this@LoginActivity, it.localizedMessage, Toast.LENGTH_LONG).show()
             }

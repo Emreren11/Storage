@@ -10,11 +10,13 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.emre.storage.R
 import com.emre.storage.adapter.ProductDataAdapter
 import com.emre.storage.databinding.FragmentHomeBinding
 import com.emre.storage.databinding.FragmentStorageBinding
 import com.emre.storage.model.ProductData
+import com.emre.storage.view.MainActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -44,6 +46,7 @@ class StorageFragment : Fragment() {
     private var totalStock = 0
     private var totalPrice = 0.0
     private lateinit var formattedPrice: String
+    lateinit var language: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -69,11 +72,20 @@ class StorageFragment : Fragment() {
         getPrice = hashMapOf()
         getCurrency = hashMapOf()
         adapterArray = ArrayList()
+        language = (activity as MainActivity).language
 
         // Main product doc reference
         storageRef = firestore.collection(userEmail).document("storage")
         // Main storage doc reference
         productRef = firestore.collection(userEmail).document("products")
+
+        // UI changes for language
+        if (language == "Türkçe") {
+            binding.colorTextView.text = "Renk"
+            binding.StockfromStorage.text = "Stok Adedi"
+            binding.priceFromStorage.text = "Fiyat"
+            binding.productFromStorage.text = "Ürün"
+        }
 
         // Get products to spinner
         getDataToSpinner()
@@ -121,7 +133,6 @@ class StorageFragment : Fragment() {
                 getCurrency.put(document.id, document.get("currency").toString())
             }
 
-
             val spinner: Spinner = binding.spinner2
             val spinAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, spinnerArray)
             spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -145,15 +156,21 @@ class StorageFragment : Fragment() {
 
                     totalStock += stock.toInt()
 
-
-
                     val data = ProductData(productName, price, color, stock, currency)
                     adapterArray.add(data)
                 }
-                binding.totalStockText.text = "Total Stock: $totalStock"
+                if (language == "Türkçe") {
+                    binding.totalStockText.text = "Toplam Stok: $totalStock"
+                } else {
+                    binding.totalStockText.text = "Total Stock: $totalStock"
+                }
                 totalPrice = totalStock.toDouble() * price.toDouble()
                 formattedPrice = String.format("%.2f", totalPrice)
-                binding.totalPriceText.text = "Total Price: $formattedPrice $currency"
+                if (language == "Türkçe") {
+                    binding.totalPriceText.text = "Toplam Fiyat: $formattedPrice $currency"
+                } else {
+                    binding.totalPriceText.text = "Total Price: $formattedPrice $currency"
+                }
             }
             recyclerAdapter.notifyDataSetChanged()
         }
