@@ -68,7 +68,11 @@ class MainActivity : AppCompatActivity() {
                         val action = StorageFragmentDirections.actionStorageFragmentToHomeFragment()
                         navController.navigate(action)
                     } else {
-                        Toast.makeText(this@MainActivity, "You are already on the Home Page!", Toast.LENGTH_LONG).show()
+                        if (language == "Türkçe") {
+                            Toast.makeText(this@MainActivity, "Anasayfadasınız!", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(this@MainActivity, "You are already on the Home Page!", Toast.LENGTH_LONG).show()
+                        }
                     }
                     true
                 }
@@ -77,7 +81,11 @@ class MainActivity : AppCompatActivity() {
                         val action = HomeFragmentDirections.actionHomeFragmentToStorageFragment()
                         navController.navigate(action)
                     } else {
-                        Toast.makeText(this@MainActivity, "You are already on the Storage Page!", Toast.LENGTH_LONG).show()
+                        if (language == "Türkçe") {
+                            Toast.makeText(this@MainActivity, "Depo sayfasındasınız!", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(this@MainActivity, "You are already on the Storage Page!", Toast.LENGTH_LONG).show()
+                        }
                     }
                     true
                 }
