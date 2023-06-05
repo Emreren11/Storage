@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
         sharedPreferences = getSharedPreferences("com.emre.storage.view", MODE_PRIVATE)
 
 
-
+        // Controlling user
         val currentUser = auth.currentUser
         currentUser?.let {
             val language = sharedPreferences.getString("language", "")
@@ -46,12 +46,26 @@ class LoginActivity : AppCompatActivity() {
             finish()
         }
 
+        // Getting email when sign out
         val intentFromMain = intent
         val emailFromSingOut = intentFromMain.getStringExtra("signOut")
 
         emailFromSingOut?.let {
             binding.emailText.setText(it)
         }
+
+        // UI changes for language
+        binding.radioEnglish.setOnClickListener {
+            binding.signUpBtn.text = "Sign Up"
+            binding.signInBtn.text = "Sign In"
+            binding.passText.hint = "Password"
+        }
+        binding.radioTurkish.setOnClickListener {
+            binding.signUpBtn.text = "Kayıt ol"
+            binding.signInBtn.text = "Giriş Yap"
+            binding.passText.hint = "Şifre"
+        }
+
 
     }
 

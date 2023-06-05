@@ -69,12 +69,12 @@ class HomeFragment : Fragment() {
         // UI changes for language
         if (language == "Türkçe") {
             binding.productText.text = "Ürün"
-            binding.productNameText.hint = "Ürün İsmi"
-            binding.priceText.hint = "Birim Fiyat"
+            binding.productNameText.hint = "Ürün İsmi*"
+            binding.priceText.hint = "Birim Fiyat*"
             binding.productAddBtn.text = "Ekle / Güncelle"
             binding.stockTextView.text = "Stok"
-            binding.colorText.hint = "Renk"
-            binding.stockText.hint = "Stok Adedi"
+            binding.colorText.hint = "Renk*"
+            binding.stockText.hint = "Stok Adedi*"
             binding.stockDeleteBtn.text = "Sil"
             binding.stockAddBtn.text = "Ekle"
         }

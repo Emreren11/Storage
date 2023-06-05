@@ -55,8 +55,6 @@ class MainActivity : AppCompatActivity() {
         // Getting fragment to HostFragment
         getFragment()
 
-
-
     }
 
     private fun getFragment() {
