@@ -2,17 +2,25 @@
 Storage uygulaması, firebase altyapısını kullanarak oluşturulan ürünleri ve ürünlerin stok adedlerini çevrimiçi ortama eş zamanlı olarak kaydeder. Uygulama silinse bile kullanıcı girişi ile stok kontrolu yapılabilir.
 
 ## Login Page
-![login](https://github.com/Emreren11/Storage/assets/113580478/44e795f2-a79b-451c-b1f4-3a3d0080865b)
+![loginEN](https://github.com/Emreren11/Storage/assets/113580478/41815329-129d-46f0-b3cc-9530d40f37cd) ---->
+![loginTR](https://github.com/Emreren11/Storage/assets/113580478/bb7ec402-8e24-4053-8ef3-f8d040eed756)
 
 ***Sign In*** : Firebase ile kontrol sağlar ve giriş yapar.
 
 ***Sign Up*** : Verilen bilgiler doğrultusunda Firebase içerisine kayıt olunur. Kayıt olma işlemi olduğunda kişinin vermiş olduğu email bilgisi ile bir "collection" oluşturulur.
 
+***English - Türkçe*** : Seçilen dil seçeneğine göre arayüzü yeniler ve firestore'a dil bilgisini işler. Her giriş yapıldığında değiştirilebilir.
+
 
 ## Home Page
-![home](https://github.com/Emreren11/Storage/assets/113580478/4e41938c-6406-4023-924a-99b55125dbbd)
-![home_addProduct](https://github.com/Emreren11/Storage/assets/113580478/c1450a20-0724-4509-92c9-d50825a18ee9)
-![home_addStock](https://github.com/Emreren11/Storage/assets/113580478/23f82f69-8517-45b9-a9f7-ba3634951c56)
+![home](https://github.com/Emreren11/Storage/assets/113580478/479d0e9d-6581-48ac-add5-1c9a43bbfb76) ---->
+![home_addProduct](https://github.com/Emreren11/Storage/assets/113580478/34f25a33-346d-4d84-8a1d-599a8c342917) ---->
+![home_addStock](https://github.com/Emreren11/Storage/assets/113580478/eb6787c1-066a-4a1a-a11c-2a26a6b14dcf)
+
+![homeTR](https://github.com/Emreren11/Storage/assets/113580478/83e6adbd-42d8-42df-b426-e075bf5edd7f) ---->
+![homeTR_product](https://github.com/Emreren11/Storage/assets/113580478/056e2215-a170-4d91-a49d-33202fb389b2) ---->
+![homeTR_stock](https://github.com/Emreren11/Storage/assets/113580478/60ca9cb5-8f9d-480a-bdb2-861473dd9ded)
+
 - Activity açıldığında ilk gösterilen fragmandır.
 - BottomNavigationView içerisinde olan ***Home*** tuşuyla da açılabilir.
 
@@ -29,7 +37,9 @@ Storage uygulaması, firebase altyapısını kullanarak oluşturulan ürünleri 
 ***Delete Butonu*** : *Add butonu* ile oluşturulan döküman içerisinde kontrol yapar. Kontrol sonucunda girilen bilgiler doğrultusunda azaltma işlemini yapar.
 
 ## Storage Page
-![storage](https://github.com/Emreren11/Storage/assets/113580478/da2586d0-e91e-4f0b-9dac-03084013c952)
+![storageEN](https://github.com/Emreren11/Storage/assets/113580478/bcb2e49a-1710-43af-8425-394002579b77) ---->
+![storageTR](https://github.com/Emreren11/Storage/assets/113580478/73a2ca29-a718-4295-babd-6c6599bd2e88)
+
 - BottomNavigtaionView içerisindeki ***Storage*** tuşu ile açılır.
 - Spinner ile ürün seçimi yapıldığında firestore içerisinden data çekilir.
 - Çekilen data recyclerView içerisine aktarılır.
