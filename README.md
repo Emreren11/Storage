@@ -1,6 +1,9 @@
 # Storage
 Storage uygulaması, firebase altyapısını kullanarak oluşturulan ürünleri ve ürünlerin stok adedlerini çevrimiçi ortama eş zamanlı olarak kaydeder. Uygulama silinse bile kullanıcı girişi ile stok kontrolu yapılabilir.
 
+## Tanıtım Video Linki
+https://www.youtube.com/watch?v=guskdi0f9Hc
+
 ## Login Page
 ![loginEN](https://github.com/Emreren11/Storage/assets/113580478/41815329-129d-46f0-b3cc-9530d40f37cd) ---->
 ![loginTR](https://github.com/Emreren11/Storage/assets/113580478/bb7ec402-8e24-4053-8ef3-f8d040eed756)
